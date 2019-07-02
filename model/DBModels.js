@@ -1,9 +1,9 @@
-const sequalize = require ('sequelize')
+let {Sequelize} = require ('sequelize')
 require('dotenv/config')
 
 let ready = false;
 
-const Op = sequalize.Op;
+const Op = Sequelize.Op;
 const operatorsAlias = {
     $eq: Op.eq,
     $ne: Op.ne,
@@ -42,7 +42,7 @@ const operatorsAlias = {
   };
 
 
-const con = new sequalize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+const con = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST, 
     dialect : 'mysql',
     operatorsAliases : false,
@@ -66,13 +66,13 @@ const con = new sequalize(process.env.DB_NAME, process.env.DB_USER, process.env.
 
 const user = con.define('user', {
     id : {
-        type : sequalize.INTEGER,
+        type : Sequelize.INTEGER,
         autoIncrement : true,
-        primaryKey : true
+        primaryKey : true,
     },
     username : 
     {
-        type:sequalize.STRING,
+        type:Sequelize.STRING,
         unique : true,
         allowNull : false,
         validate:
@@ -82,17 +82,15 @@ const user = con.define('user', {
     },
     password: 
     {
-        type:sequalize.STRING,
+        type:Sequelize.STRING,
         allowNull : false,
     },
     admin: {
-        type : sequalize.BOOLEAN,
+        type : Sequelize.BOOLEAN,
         allowNull : false,
         default : false
     }
 });
-
-
 
 module.exports = {
     Con : con,

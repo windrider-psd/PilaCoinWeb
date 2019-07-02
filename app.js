@@ -34,7 +34,7 @@ module.exports = function CriarApp(sessao)
   app.use(logger('dev'))
   app.use(sessao)
 
-  app.use('/action/', require('./routes/users'))
+  app.use('/action', require('./routes/users'))
   
 
   // catch 404 and forward to error handler
