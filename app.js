@@ -33,7 +33,8 @@ module.exports = function CriarApp(sessao)
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(logger('dev'))
   app.use(sessao)
-  app.use(require('./routes/pages'))
+
+  app.use('/action/', require('./routes/users'))
   
 
   // catch 404 and forward to error handler
