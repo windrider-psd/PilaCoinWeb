@@ -17,7 +17,7 @@ const armazenadorSessao = new RedisStore({host : 'localhost', port : 6379, clien
 const sessaomiddleware = session({
   store : armazenadorSessao,
   resave: true,
-  saveUninitialized : true, 
+  saveUninitialized : false, 
   secret : 'uijn4unip32nur324p23u'});
 
 if(yargs.clearsessions)

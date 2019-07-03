@@ -7,8 +7,9 @@ $(document).ready(function () {
         let params = utils.FormToAssocArray($(this))
         $.ajax({
             method : 'POST',
-            url : '/users/user',
+            url : '/users/login',
             data: params,
+            dataType : "JSON",
             success : (response) => {
                 console.log(response)
             },
@@ -17,4 +18,6 @@ $(document).ready(function () {
             }
         })
     })
+    
+
 })

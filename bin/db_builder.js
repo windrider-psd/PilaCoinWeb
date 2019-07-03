@@ -11,7 +11,7 @@ builder.ClearForeignKeys()
     .then(() => {
         builder.SyncDatabase(forca,  () =>
         {
-            let encryptedPassword = bcrypt.hashSync(config.defaultAdmin.username, 9);
+            let encryptedPassword = bcrypt.hashSync(config.defaultAdmin.password, 9);
 
             models.user.create({username : config.defaultAdmin.username, password: encryptedPassword, admin : true})
                 .then((createdUser) => {
