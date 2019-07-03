@@ -15,7 +15,7 @@ function render(view, res)
 
 router.get('/', (req, res) => {
   if(req.session.user)
-    render('session', res)
+    render('home', res)
   else
     render('login', res);
 });

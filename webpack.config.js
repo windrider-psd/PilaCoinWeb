@@ -2,10 +2,11 @@ const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-require('dotenv')
+let config = require('./app.config')
+
 
 let otimazacao = {}
-if(process.env.mode == "production")
+if(config.mode == "production")
 {
 	otimazacao.minimizer = [new UglifyJsPlugin({test : /.js/})]
 }
@@ -24,6 +25,7 @@ for (let i = 0; i < frameworks.length; i++) {
 for (let i = 0; i < generics.length; i++) {
 	generic_entry.push(generics[i])
 }
+
 
 let generic_pages = glob.sync('./view/pages/generic/pages/*/')
 for (let i = 0; i < generic_pages.length; i++) {
@@ -56,7 +58,7 @@ for (let i = 0; i < generic_pages.length; i++) {
 				orderEntry.push(entries[j])
 			}
 			let masterEntryOBJ = {
-				mode: 'development',
+				mode: config.mode,
 				entry: orderEntry,
 				output: {
 					path: __dirname + '/dist',
@@ -172,7 +174,7 @@ for(let i = 0; i < specialized_modules.length; i++)
 					orderEntry.push(entries[j])
 				}
 				let masterEntryOBJ = {
-					mode: process.env.mode,
+					mode: config.mode,
 					entry: orderEntry,
 					output:
 					{

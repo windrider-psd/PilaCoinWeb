@@ -40,7 +40,6 @@ module.exports = function CriarApp(sessao)
   app.use('/', require('./routes/pages'))
 
   app.use((req, res, next) => {
-    console.log(req.headers.referer)
     if(typeof(req.headers.referer) != 'undefined')
     {
       let url = new URL(req.headers.referer)

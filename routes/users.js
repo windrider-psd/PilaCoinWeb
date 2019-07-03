@@ -72,11 +72,11 @@ router.delete('/login', (req, res, next) => {
   req.session.regenerate(err => {
     if(err)
     {
-      res.status(200).end("Error while logging out")
+      res.status(500).end("Error while logging out")
     }
     else
     {
-      res.status(200).end("")
+      res.status(200).json({})
     }
   })
 })

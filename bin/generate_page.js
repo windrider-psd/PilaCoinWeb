@@ -3,7 +3,6 @@ let path = require('path')
 let fs = require('fs')
 
 let diretorio;
-console.log(yars)
 if(!yars.name)
 {
     console.log("A geração de página precisa ter um --name")

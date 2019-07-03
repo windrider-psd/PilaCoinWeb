@@ -1,23 +1,20 @@
 let $ = require('jquery')
-let utils = require('./../../modules/utils')
-
+let utils = require('./../../../../generic/modules/utils')
 
 $(document).ready(function () {
-    $("#register-form").on('submit', function(){
-        let params = utils.FormToAssocArray($(this))
+
+    $("#logout").on('click', function(){
         $.ajax({
-            method : 'POST',
+            method : 'DELETE',
             url : '/users/login',
-            data: params,
+            data: {},
             dataType : "JSON",
             success : (response) => {
                 location.reload()
             },
-            error : function (message) {
+            error : (message) => {
                 utils.GerarNotificacao(message.responseText, 'primary')
             }
         })
     })
-    
-
 })
