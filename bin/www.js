@@ -9,6 +9,8 @@ const http = require('http');
 const yargs = require('yargs').argv
 const session = require('express-session')
 const RedisStore = require('connect-redis')(session);
+let config = require('./../app.config')
+
 const redis = require('redis').createClient({host : 'localhost', port : 6379});
 
 const armazenadorSessao = new RedisStore({host : 'localhost', port : 6379, client : redis})
@@ -24,13 +26,15 @@ if(yargs.clearsessions)
   redis.flushdb();
 }
 
+
+
 var app = require('../app')(sessaomiddleware);
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '80');
+var port = normalizePort(process.env.PORT || config.web.port);
 app.set('port', port);
 
 /**

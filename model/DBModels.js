@@ -1,6 +1,5 @@
 let {Sequelize} = require ('sequelize')
-require('dotenv/config')
-
+let config = require('../app.config')
 let ready = false;
 
 const Op = Sequelize.Op;
@@ -42,8 +41,8 @@ const operatorsAlias = {
   };
 
 
-const con = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST, 
+const con = new Sequelize(config.database.databaseName, config.database.user, config.database.password, {
+    host: config.database.host, 
     dialect : 'mysql',
     operatorsAliases : false,
     timezone : 'Brazil/East',

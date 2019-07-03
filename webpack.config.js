@@ -93,7 +93,7 @@ for (let i = 0; i < generic_pages.length; i++) {
 							test: /\.js/,
 							loader: 'babel-loader',
 							query: {
-								presets: ['env']
+								presets: ["@babel/preset-env"]
 							}
 						},
 						{
@@ -214,7 +214,7 @@ for(let i = 0; i < specialized_modules.length; i++)
 							loader: 'babel-loader',
 							query:
 							{
-								presets: ['env']
+								presets: ["@babel/preset-env"]
 							}
 						},
 						{
