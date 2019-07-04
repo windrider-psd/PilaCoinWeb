@@ -1,4 +1,5 @@
-let {Sequelize} = require ('sequelize')
+let seq = require('sequelize')
+let {Sequelize} = seq
 let config = require('../app.config')
 let ready = false;
 
@@ -50,9 +51,60 @@ const user = con.define('user', {
     }
 });
 
+const pilaCoin = con.define('pilacoin', {
+    id : {
+        type : seq.INTEGER,
+        primaryKey : true
+    },
+    idCriador: {
+        type : seq.STRING,
+        allowNull : false,
+    },
+    dataCriacao: {
+        type: seq.DATE,
+        allowNull : false,
+    },
+    chaveCriador : {
+        type : seq.STRING,
+        allowNull : false,
+    },
+    numeroMagico : {
+        type : seq.BIGINT,
+        allowNull : false
+    },
+    assinaturaMaster : {
+        type : seq.STRING,
+    }
+})
+
+const transaction = con.define('pilacoin', {
+    pilaCoin : {
+        type : seq.INTEGER,
+        references : {
+            model : pilaCoin,
+            key : 'id'
+        },
+        onDelete : 'CASCADE'
+    },
+    idNovoDono : {
+        type : seq.STRING,
+        allowNull : false
+    },
+    dataTransacao: {
+        type: seq.DATE,
+        allowNull : false,
+    },
+    assinaturaDono : {
+        type : seq.STRING,
+        allowNull : false
+    }
+})
+
 module.exports = {
-    Con : con,
-    user : user, 
+    Connection : con,
+    User : user,
+    PilaCoin : pilaCoin,
+    Transaction : transaction, 
     isReady : function(){return ready;}
 };
 

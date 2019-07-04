@@ -19,7 +19,7 @@ router.post('/login', (req, res, next) => {
   {
     params.username = sanitizer.sanitize(params.username)
 
-    models.user.findOne({where : {username : params.username}})
+    models.User.findOne({where : {username : params.username}})
       .then((user) => {
         if(!user)
         {
@@ -117,7 +117,7 @@ router.post('/user', (req, res, next) => {
     return
   }
 
-  models.user.findOne({
+  models.User.findOne({
       where: {
         username: params.username
       }
@@ -130,7 +130,7 @@ router.post('/user', (req, res, next) => {
           if (err) {
             res.status(500).end("Error while encrypting password")
           } else {
-            models.user.create({
+            models.User.create({
                 username: sanitizer.sanitize(params.username),
                 password: encryptedPassword,
                 admin: params.admin
