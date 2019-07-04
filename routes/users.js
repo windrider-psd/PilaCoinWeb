@@ -10,6 +10,7 @@ router.post('/login', (req, res, next) => {
    */
   let params = req.body
 
+  
   if(!(params.username && params.password))
   {
     res.status(400).end("Invalid parameters.")

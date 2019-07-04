@@ -17,4 +17,17 @@ $(document).ready(function () {
             }
         })
     })
+
+    $.ajax({
+        method : 'GET',
+            url : '/pilacoins/schedule',
+            data: {},
+            dataType : "JSON",
+            success : (response) => {
+                console.log(response)
+            },
+            error : (message) => {
+                utils.GerarNotificacao(message.responseText, 'primary')
+            }
+    })
 })
