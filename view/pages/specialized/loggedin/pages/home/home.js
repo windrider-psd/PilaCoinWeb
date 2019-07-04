@@ -20,7 +20,7 @@ $(document).ready(function () {
 
     $.ajax({
         method : 'GET',
-            url : '/pilacoins/schedule',
+            url : '/pilacoins/storage',
             data: {},
             dataType : "JSON",
             success : (response) => {

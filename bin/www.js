@@ -11,6 +11,9 @@ const session = require('express-session')
 const RedisStore = require('connect-redis')(session);
 let config = require('./../app.config')
 
+require('./../services/PilaCoinListener')
+
+
 const redis = require('redis').createClient({host : 'localhost', port : 6379});
 
 const armazenadorSessao = new RedisStore({host : 'localhost', port : 6379, client : redis})

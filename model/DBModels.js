@@ -77,7 +77,7 @@ const pilaCoin = con.define('pilacoin', {
     }
 })
 
-const transaction = con.define('pilacoin', {
+const transaction = con.define('transaction', {
     pilaCoin : {
         type : seq.INTEGER,
         references : {

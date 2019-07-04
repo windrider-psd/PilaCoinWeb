@@ -6,9 +6,17 @@ class DBBuilder {
     
     static SyncDatabase(force, callback)
     {
-        models.user.sync({force : force})
+        models.User.sync({force : force})
             .then(() => {
-                callback()
+                models.PilaCoin.sync({force : force})
+                    .then(() => {
+                        models.Transaction.sync({force : force})
+                            .then(() => {
+                                callback()
+                            })
+                    })
+
+
             })
             .catch((err) =>
             {
@@ -23,7 +31,7 @@ class DBBuilder {
     */
    static ClearForeignKeys()
     {
-        const queryInterface = models.Con.getQueryInterface();
+        const queryInterface = models.Connection.getQueryInterface();
             return queryInterface.showAllTables().then(tableNames => {
            Promise.all(tableNames.map(tableName => {
                 queryInterface.showConstraint(tableName).then(constraints => {

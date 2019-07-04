@@ -13,7 +13,7 @@ builder.ClearForeignKeys()
         {
             let encryptedPassword = bcrypt.hashSync(config.defaultAdmin.password, 9);
 
-            models.user.create({username : config.defaultAdmin.username, password: encryptedPassword, admin : true})
+            models.User.create({username : config.defaultAdmin.username, password: encryptedPassword, admin : true})
                 .then((createdUser) => {
                     console.log("Builder has finished")
                 });
