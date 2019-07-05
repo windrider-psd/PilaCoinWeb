@@ -81,6 +81,7 @@ module.exports = function CriarApp(sessao)
   });
   app.locals.enderecoIP = require('ip').address()
   console.log(`Mode: ${config.mode}`)
+  return app
   if(config.mode == 'development' && !yargs.nowebpack)
   {
     app.use(require("webpack-dev-middleware")(compiler, {

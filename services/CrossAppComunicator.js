@@ -103,6 +103,9 @@ let MESSAGETYPE = {
  * @callback OnReadyCallback
  */
 
+
+let endCommand = "\\r\\nEND\\r\\n";
+
 class CrossAppCommunicator {
     /**
      * 
@@ -130,6 +133,7 @@ class CrossAppCommunicator {
         this.server.listen(port, ip.address(), () => {
 
         })
+        let completeData = ''
 
         this.server.on('connection', (client) => {
             if (this.connected) {
@@ -142,17 +146,38 @@ class CrossAppCommunicator {
             this.client.on('data', (data) => {
                 
                 let json = String(data);
+                if(json == "ping")
+                {
+                    return;
+                }
                 /**
                 * @type {HuskyMessage}
                 */
                 let message
-                try{
-                    message = JSON.parse(json);
-                }
-                catch(ex)
+                if(json.includes(endCommand))
                 {
+                    /**
+                     * @type {String}
+                     */
+                    let c = completeData + json
+                    let parsed = c.slice(0, -endCommand.length)
+                    try{
+                        message = JSON.parse(parsed);
+                    }
+                    catch(ex)
+                    {
+                        completeData = ''
+                        return
+                    }
+                    completeData = ''
+                }
+                else
+                {
+                    completeData += json;
                     return
                 }
+
+               
                 
                 if (message.messageType == MESSAGETYPE.RESPONSE) {
                     /**
@@ -215,6 +240,7 @@ class CrossAppCommunicator {
 
             this.client.on('end', () =>
              {
+                 console.log("ending");
                 this.client.destroy();
                 this.client = null;
                 this.connected = false;

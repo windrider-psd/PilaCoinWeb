@@ -58,36 +58,38 @@ class PilaCoinListener{
                                     let promisses = []
 
                                     lodash.each(pilaCoins, (pilaCoin) => {
-                                        
-                                        
                                         let p = new Bluebird((resolve, reject) => {
                                             let trans = pilaCoin.transacoes
                                             delete pilaCoin.transacoes
                                            
-                                            let subPromisses = []
-
+                                            
                                             PilaCoin.create(pilaCoin, {transaction : t})
                                                 .then((createdPilaCoin) => {
-                                                    console.log(trans)
-                                                    
+                                                    let subPromisses = []
+                                                    if(typeof(trans) == "undefined" && trans == null)
+                                                    {
+                                                        resolve();
+                                                        return;
+                                                    }
                                                     lodash.each(trans, (tran) => {
                                                         //console.log(tran)    
                                                         tran['pilaCoin'] = createdPilaCoin.dataValues.id
-                                                        let b = new Bluebird((re, rj) => {
+                                                        let sub = new Bluebird((re, rj) => {
                                                             Transaction.create(tran, {transaction : t})
                                                                 .then((x) => {
-                                                                    console.log(x.dataValues)
                                                                     re();
                                                                 })
                                                         })
-                                                        subPromisses.push(b)
+                                                        subPromisses.push(sub)
+                                                    })
+
+                                                Bluebird.all(subPromisses)
+                                                    .then(() => {
+        
+                                                        resolve();
                                                     })
                                                 })
-                                            Bluebird.all(subPromisses)
-                                                .then(() => {
-    
-                                                    resolve();
-                                                })
+                                            
                                         }) 
                                         
                                         promisses.push(p);
@@ -95,7 +97,6 @@ class PilaCoinListener{
                                     Bluebird.all(promisses)
                                         
                                         .then(() => {
-                                            console.log("?!?!")
                                             t.commit()
                                                 .then(() => {
                                                     console.log("Synced")
