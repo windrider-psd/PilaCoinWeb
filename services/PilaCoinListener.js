@@ -119,7 +119,7 @@ class PilaCoinListener{
         
 
         CrossAppCommunicator.OnCommand('pilacoin/finished-validation', OPERATIONTYPE.WRITE, (command, wr) => {
-
+            console.log("HELP!")
             let pilacoin = command.arg;
             let createOBJ = {}
             for(let key in pilacoin)

@@ -5,7 +5,7 @@ let ready = false;
 
 const con = new Sequelize(config.database.databaseName, config.database.user, config.database.password, {
     host: config.database.host, 
-    dialect : 'mysql',
+    dialect : 'postgres',
     timezone : 'Brazil/East',
     sync : {force : true},
     define:
@@ -65,7 +65,7 @@ const pilaCoin = con.define('pilacoin', {
         allowNull : false,
     },
     chaveCriador : {
-        type : seq.STRING,
+        type : seq.TEXT,
         allowNull : false,
     },
     numeroMagico : {
@@ -73,7 +73,7 @@ const pilaCoin = con.define('pilacoin', {
         allowNull : false
     },
     assinaturaMaster : {
-        type : seq.STRING,
+        type : seq.TEXT,
     }
 })
 
@@ -95,7 +95,7 @@ const transaction = con.define('transaction', {
         allowNull : false,
     },
     assinaturaDono : {
-        type : seq.STRING,
+        type : seq.TEXT,
         allowNull : false
     }
 })

@@ -1,6 +1,7 @@
 let net = require('net');
 let ip = require('ip')
 let lodash = require('lodash')
+let mosca = require('mosca')
 
 /**
  * @typedef {number} HuskyOperationType
@@ -130,9 +131,108 @@ class CrossAppCommunicator {
 
         this.server = new net.Server();
         this.connected = false
+
+
+        let moscaSettings = {
+            port: 1883,
+        }
+        this.mosca = new mosca.Server(moscaSettings);
+        this.mosca.on('ready', () => {
+            console.log("Mosca is running")
+            
+        })
+
         this.server.listen(port, ip.address(), () => {
 
         })
+        this.mosca.on('clientConnected', (client) => {
+            lodash.each(this.onReadyCallbacks, (r) => {
+                r();
+            })
+        })
+        this.mosca.on('published',  (packet, client) => {
+            let json = String(packet.payload);
+            console.log(json)
+            if (json == "ping") {
+                return;
+            }
+            else if(json.split('/')[0] == "master")
+            {
+                return
+            }
+            /**
+            * @type {HuskyMessage}
+            */
+            let message
+            try {
+                message = JSON.parse(json);
+            }
+            catch (ex) {
+                return
+            }
+
+            if(typeof(message.messageType) == "undefined" || message.messageType == null)
+            {
+                return;
+            }
+
+            if (message.messageType == MESSAGETYPE.RESPONSE) {
+                /**
+                 * @type {HuskyResponse}
+                 */
+                let response = JSON.parse(message.arg)
+                /**
+                 * @type {Array.<ResponseWaitObject>}
+                 */
+                let called = []
+                lodash.forEach(this.responseWaitObjects, (w) => {
+                    if (w.id == response.commandId) {
+                        called.push(w)
+                        w.callback(null, response)
+                    }
+                })
+
+                lodash.remove(this.responseWaitObjects, (w) => {
+                    return called.includes(w, 0)
+                })
+            } else if (message.messageType == MESSAGETYPE.COMMAND) {
+                /**
+                 * @type {HuskyCommand}
+                 */
+                let command = JSON.parse(message.arg)
+                try {
+                    let arg = JSON.parse(command.arg)
+                    command.arg = arg;
+                }
+                catch (ex) {
+                    console.log("ex")
+                }
+                let called = false;
+                lodash.forEach(this.onCommandWaitObjects, (w) => {
+
+                    if (w.commandPath == command.commandPath && w.operationType == command.operationType) {
+
+                        let func = new WriteResponseFunction(command, this);
+
+                        w.OnCommandCallback(command, func.response)
+
+                        called = true;
+                    }
+                })
+                if (!called) {
+                    /**
+                     * @type {HuskyError}
+                     */
+                    let err = {
+                        code: 'NRT',
+                        message: "No route"
+                    }
+                    
+                    this.WriteResponse(command.commandId, RESPONSESTATUS.INVALID, err)
+                }
+
+            }
+        });
         let completeData = ''
 
         this.server.on('connection', (client) => {
@@ -144,103 +244,12 @@ class CrossAppCommunicator {
             this.client = client;
 
             this.client.on('data', (data) => {
-                
-                let json = String(data);
-                if(json == "ping")
-                {
-                    return;
-                }
-                /**
-                * @type {HuskyMessage}
-                */
-                let message
-                if(json.includes(endCommand))
-                {
-                    /**
-                     * @type {String}
-                     */
-                    let c = completeData + json
-                    let parsed = c.slice(0, -endCommand.length)
-                    try{
-                        message = JSON.parse(parsed);
-                    }
-                    catch(ex)
-                    {
-                        completeData = ''
-                        return
-                    }
-                    completeData = ''
-                }
-                else
-                {
-                    completeData += json;
-                    return
-                }
 
-               
-                
-                if (message.messageType == MESSAGETYPE.RESPONSE) {
-                    /**
-                     * @type {HuskyResponse}
-                     */
-                    let response = JSON.parse(message.arg)
-                    /**
-                     * @type {Array.<ResponseWaitObject>}
-                     */
-                    let called = []
-                    lodash.forEach(this.responseWaitObjects, (w) => {
-                        if (w.id == response.commandId) {
-                            called.push(w)
-                            w.callback(null, response)
-                        }
-                    })
 
-                    lodash.remove(this.responseWaitObjects, (w) => {
-                        return called.includes(w, 0)
-                    })
-                } else if (message.messageType == MESSAGETYPE.COMMAND) {
-                    /**
-                     * @type {HuskyCommand}
-                     */
-                    let command = JSON.parse(message.arg)
-                    try
-                    {
-                        let arg = JSON.parse(command.arg)
-                        command.arg = arg;
-                    }
-                    catch(ex){
-                        console.log("ex")
-                    }
-                    let called = false;
-                    lodash.forEach(this.onCommandWaitObjects, (w) => {
-
-                        if (w.commandPath == command.commandPath && w.operationType == command.operationType) {
-
-                            let func = new WriteResponseFunction(command, this);
-
-                            w.OnCommandCallback(command, func.response)
-
-                            called = true;
-                        }
-                    })
-                    if (!called) {
-                        /**
-                         * @type {HuskyError}
-                         */
-                        let err = {
-                            code: 'NRT',
-                            message: "No route"
-                        }
-
-                        this.WriteResponse(command.commandId, RESPONSESTATUS.INVALID, err)
-                    }
-
-                }
             })
 
-            this.client.on('end', () =>
-             {
-                 console.log("ending");
+            this.client.on('end', () => {
+                console.log("ending");
                 this.client.destroy();
                 this.client = null;
                 this.connected = false;
@@ -256,9 +265,7 @@ class CrossAppCommunicator {
                 this.connected = false;
             })
 
-            lodash.each(this.onReadyCallbacks, (r) => {
-                r();
-            })
+            
         })
     }
     /**
@@ -314,8 +321,9 @@ class CrossAppCommunicator {
                 arg: JSON.stringify(command),
                 messageType: MESSAGETYPE.COMMAND
             }
-
-            this.client.write(JSON.stringify(message))
+            console.log("aaaaa")
+            this.mosca.publish({payload : JSON.stringify(message), topic : "java/command", qos : 1});
+        
         }
     }
 
@@ -379,7 +387,7 @@ class CrossAppCommunicator {
             arg: JSON.stringify(response),
             messageType: MESSAGETYPE.RESPONSE
         }
-        this.client.write(JSON.stringify(message))
+        this.mosca.publish({payload : JSON.stringify(message), topic : "java/response"});
     }
 
     /**

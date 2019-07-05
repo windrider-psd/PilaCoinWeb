@@ -2,8 +2,8 @@ module.exports = {
     mode : 'development',
     database:
     {
-        user: 'root',
-        password : '',
+        user: 'postgres',
+        password : '1234',
         databaseName: 'pilacoin',
         host : 'localhost'
     },
