@@ -5,7 +5,7 @@ let ready = false;
 
 const con = new Sequelize(config.database.databaseName, config.database.user, config.database.password, {
     host: config.database.host, 
-    dialect : 'postgres',
+    dialect : config.database.dialect,
     timezone : 'Brazil/East',
     sync : {force : true},
     define:

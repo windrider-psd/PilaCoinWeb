@@ -32,6 +32,7 @@ class PilaCoinListener{
             let GetPilasCoins = () => {
                 return new Promise((resolve, reject) => {
                     CrossAppCommunicator.WriteCommand('pilacoin/storage', OPERATIONTYPE.READ, {}, (err, res) => {
+                    
                         if(err)
                         {
                             reject(err)
@@ -56,7 +57,6 @@ class PilaCoinListener{
                             GetPilasCoins()
                                 .then(pilaCoins => {
                                     let promisses = []
-
                                     lodash.each(pilaCoins, (pilaCoin) => {
                                         let p = new Bluebird((resolve, reject) => {
                                             let trans = pilaCoin.transacoes
@@ -68,6 +68,7 @@ class PilaCoinListener{
                                                     let subPromisses = []
                                                     if(typeof(trans) == "undefined" && trans == null)
                                                     {
+                                                        console.log("Resolving")
                                                         resolve();
                                                         return;
                                                     }
@@ -120,6 +121,7 @@ class PilaCoinListener{
 
         CrossAppCommunicator.OnCommand('pilacoin/finished-validation', OPERATIONTYPE.WRITE, (command, wr) => {
             console.log("HELP!")
+            //return;
             let pilacoin = command.arg;
             let createOBJ = {}
             for(let key in pilacoin)

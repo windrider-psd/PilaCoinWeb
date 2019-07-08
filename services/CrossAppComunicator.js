@@ -129,7 +129,6 @@ class CrossAppCommunicator {
          */
         this.onReadyCallbacks = []
 
-        this.server = new net.Server();
         this.connected = false
 
 
@@ -139,24 +138,46 @@ class CrossAppCommunicator {
         this.mosca = new mosca.Server(moscaSettings);
         this.mosca.on('ready', () => {
             console.log("Mosca is running")
-            
         })
 
-        this.server.listen(port, ip.address(), () => {
+        this.subResponse = false;
+        this.subCommand = false;
 
-        })
         this.mosca.on('clientConnected', (client) => {
-            lodash.each(this.onReadyCallbacks, (r) => {
-                r();
-            })
+            console.log("A client has connected");
         })
-        this.mosca.on('published',  (packet, client) => {
-            let json = String(packet.payload);
-            console.log(json)
-            if (json == "ping") {
-                return;
+        this.mosca.on('clientDisconnected', () => {
+            this.subResponse = false;
+            this.subCommand = false;
+        })
+        this.mosca.on('published', (packet, client) => {
+
+
+            try {
+                let topicSplit = packet.topic.split('/');
+                if (topicSplit[2] == 'new' && topicSplit[3] == 'subscribes') {
+                    let obj = JSON.parse(packet.payload);
+
+                    if (obj.topic == `${obj.clientId}/command`) {
+                        this.subCommand = true;
+                    }
+                    if (obj.topic == `${obj.clientId}/response`) {
+                        this.subResponse = true;
+                    }
+                    if (this.subCommand && this.subCommand) {
+                        lodash.each(this.onReadyCallbacks, (r) => {
+                            r();
+                        })
+                    }
+
+                }
+            } catch (ex) {
+
             }
-            else if(json.split('/')[0] == "master")
+
+            let json = String(packet.payload);
+            let toAgent = packet.topic.split('/')[0];
+            /*if(packet.topic.split('/')[0] == "master")
             {
                 return
             }
@@ -166,17 +187,15 @@ class CrossAppCommunicator {
             let message
             try {
                 message = JSON.parse(json);
-            }
-            catch (ex) {
+            } catch (ex) {
                 return
             }
 
-            if(typeof(message.messageType) == "undefined" || message.messageType == null)
-            {
+            if (typeof (message.messageType) == "undefined" || message.messageType == null) {
                 return;
             }
 
-            if (message.messageType == MESSAGETYPE.RESPONSE) {
+            if (message.messageType == MESSAGETYPE.RESPONSE && toAgent == "master") {
                 /**
                  * @type {HuskyResponse}
                  */
@@ -195,7 +214,8 @@ class CrossAppCommunicator {
                 lodash.remove(this.responseWaitObjects, (w) => {
                     return called.includes(w, 0)
                 })
-            } else if (message.messageType == MESSAGETYPE.COMMAND) {
+            } else if (message.messageType == MESSAGETYPE.COMMAND && toAgent == "master") {
+                console.log(message);
                 /**
                  * @type {HuskyCommand}
                  */
@@ -203,8 +223,7 @@ class CrossAppCommunicator {
                 try {
                     let arg = JSON.parse(command.arg)
                     command.arg = arg;
-                }
-                catch (ex) {
+                } catch (ex) {
                     console.log("ex")
                 }
                 let called = false;
@@ -225,48 +244,15 @@ class CrossAppCommunicator {
                      */
                     let err = {
                         code: 'NRT',
-                        message: "No route"
+                        message: `No route for ${command.commandPath}`
                     }
-                    
+
                     this.WriteResponse(command.commandId, RESPONSESTATUS.INVALID, err)
                 }
 
             }
         });
-        let completeData = ''
 
-        this.server.on('connection', (client) => {
-            if (this.connected) {
-                client.end();
-                return
-            }
-            this.connected = true;
-            this.client = client;
-
-            this.client.on('data', (data) => {
-
-
-            })
-
-            this.client.on('end', () => {
-                console.log("ending");
-                this.client.destroy();
-                this.client = null;
-                this.connected = false;
-            })
-            this.client.on('timeout', () => {
-                this.client.destroy();
-                this.client = null;
-                this.connected = false;
-            })
-            this.client.on('error', () => {
-                this.client.destroy();
-                this.client = null;
-                this.connected = false;
-            })
-
-            
-        })
     }
     /**
      * 
@@ -321,9 +307,13 @@ class CrossAppCommunicator {
                 arg: JSON.stringify(command),
                 messageType: MESSAGETYPE.COMMAND
             }
-            console.log("aaaaa")
-            this.mosca.publish({payload : JSON.stringify(message), topic : "java/command", qos : 1});
-        
+            console.log(message.arg)
+            this.mosca.publish({
+                payload: JSON.stringify(message),
+                topic: "java/command",
+                qos: 1
+            });
+
         }
     }
 
@@ -387,7 +377,10 @@ class CrossAppCommunicator {
             arg: JSON.stringify(response),
             messageType: MESSAGETYPE.RESPONSE
         }
-        this.mosca.publish({payload : JSON.stringify(message), topic : "java/response"});
+        this.mosca.publish({
+            payload: JSON.stringify(message),
+            topic: "java/response"
+        });
     }
 
     /**
