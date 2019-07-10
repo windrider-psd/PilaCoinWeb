@@ -45,7 +45,7 @@ module.exports = function CriarApp(sessao)
       let url = new URL(req.headers.referer)
       let validPort = (config.web.port == "80" && url.port == "") || url.port == config.web.port
       let validHost = (url.host == config.web.host)
-      let validIP = (url.host == ip.address() || url.host == "127.0.0.1")
+      let validIP = (url.host == ip.address() || (config.mode == "development" && url.host == "127.0.0.1"))
       if(validPort && (validHost || validIP))
       {
         next()
@@ -81,7 +81,7 @@ module.exports = function CriarApp(sessao)
   });
   app.locals.enderecoIP = require('ip').address()
   console.log(`Mode: ${config.mode}`)
-  return app;
+  
   if(config.mode == 'development' && !yargs.nowebpack)
   {
     app.use(require("webpack-dev-middleware")(compiler, {

@@ -307,7 +307,6 @@ class CrossAppCommunicator {
                 arg: JSON.stringify(command),
                 messageType: MESSAGETYPE.COMMAND
             }
-            console.log(message.arg)
             this.mosca.publish({
                 payload: JSON.stringify(message),
                 topic: "java/command",

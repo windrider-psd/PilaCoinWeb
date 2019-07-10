@@ -10,7 +10,7 @@ let lodash = require('lodash')
 class PilaCoinListener{
     constructor()
     {
-
+        
         CrossAppCommunicator.OnReady(() => {
             
             /*CrossAppCommunicator.WriteCommand('user', OPERATIONTYPE.READ, {}, (err, res) => {
@@ -114,14 +114,12 @@ class PilaCoinListener{
                 .catch(err => {
                     console.log(err)
                 })
-
-            
         })
+        
+        
         
 
         CrossAppCommunicator.OnCommand('pilacoin/finished-validation', OPERATIONTYPE.WRITE, (command, wr) => {
-            console.log("HELP!")
-            //return;
             let pilacoin = command.arg;
             let createOBJ = {}
             for(let key in pilacoin)
@@ -139,8 +137,6 @@ class PilaCoinListener{
                     console.log(err)
                     wr(RESPONSESTATUS.ERROR, err.message)
                 })
-                
-
         })
     }
 }
