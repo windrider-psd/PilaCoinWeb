@@ -12,7 +12,11 @@ class DBBuilder {
                     .then(() => {
                         models.Transaction.sync({force : force})
                             .then(() => {
-                                callback()
+                                models.LoginLog.sync({force : force})
+                                    .then(() => {
+                                        callback()
+                                    })
+                                
                             })
                     })
 

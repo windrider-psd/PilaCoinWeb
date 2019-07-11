@@ -207,7 +207,15 @@ class CrossAppCommunicator {
                 lodash.forEach(this.responseWaitObjects, (w) => {
                     if (w.id == response.commandId) {
                         called.push(w)
-                        w.callback(null, response)
+                        if(response.responseStatus == RESPONSESTATUS.OK)
+                        {
+                            w.callback(null, response)
+                        }
+                        else
+                        {
+                            w.callback(new Error(response.arg.message), response)
+                        }
+                        
                     }
                 })
 
@@ -215,7 +223,6 @@ class CrossAppCommunicator {
                     return called.includes(w, 0)
                 })
             } else if (message.messageType == MESSAGETYPE.COMMAND && toAgent == "master") {
-                console.log(message);
                 /**
                  * @type {HuskyCommand}
                  */

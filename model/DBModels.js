@@ -51,6 +51,8 @@ const user = con.define('user', {
     }
 });
 
+user.hasOne(user, {foreignKey : {allowNull : true, defaultValue : null, field : "createdBy"}, onDelete : "SET NULL"})
+
 const pilaCoin = con.define('pilacoin', {
     id : {
         type : seq.INTEGER,
@@ -100,11 +102,34 @@ const transaction = con.define('transaction', {
     }
 })
 
+const LoginLog = con.define('login_log', {
+    action: 
+    {
+        type : seq.BOOLEAN,
+        allowNull : false,
+        default : false
+    },
+    ip : 
+    {
+        type : seq.STRING,
+        allowNull : false
+    },
+    user: {
+        type : seq.INTEGER,
+        allowNull : false,
+        references :{
+            model : user,
+            key : 'id'
+        }
+    }
+})
+
 module.exports = {
     Connection : con,
     User : user,
     PilaCoin : pilaCoin,
     Transaction : transaction, 
+    LoginLog : LoginLog,
     isReady : function(){return ready;}
 };
 

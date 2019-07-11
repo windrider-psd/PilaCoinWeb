@@ -50,7 +50,7 @@ class PilaCoinListener{
                 
             }
 
-            Connection.transaction()
+            /*Connection.transaction()
                 .then(t => {
                     PilaCoin.destroy({where : {}, transaction : t})
                         .then(() => {
@@ -113,12 +113,10 @@ class PilaCoinListener{
                 })
                 .catch(err => {
                     console.log(err)
-                })
+                })*/
         })
         
         
-        
-
         CrossAppCommunicator.OnCommand('pilacoin/finished-validation', OPERATIONTYPE.WRITE, (command, wr) => {
             let pilacoin = command.arg;
             let createOBJ = {}

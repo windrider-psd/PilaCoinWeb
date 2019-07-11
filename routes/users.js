@@ -53,6 +53,9 @@ router.post('/login', (req, res, next) => {
                     else
                     {
                       res.status(200).json(user.dataValues)
+
+                      let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                      models.LoginLog.create({action: true, ip: ip, user : req.session.user.id});
                     }
                   })
                   
@@ -70,6 +73,7 @@ router.post('/login', (req, res, next) => {
 })
 
 router.delete('/login', (req, res, next) => {
+  let oldId = req.session.user.id
   req.session.regenerate(err => {
     if(err)
     {
@@ -78,12 +82,13 @@ router.delete('/login', (req, res, next) => {
     else
     {
       res.status(200).json({})
+      let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      models.LoginLog.create({action: false, ip: ip, user : oldId});
     }
   })
 })
 
 router.use((req, res, next) => {
-  
   if (typeof (req.session.user) != 'undefined' && req.session.user != null) {
     next()
   } else {

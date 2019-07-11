@@ -1,8 +1,12 @@
 let $ = require('jquery')
 let utils = require('./../../../../generic/modules/utils')
+let observer = require('./../../../../generic/modules/observer')
+
 
 $(document).ready(function () {
-
+    observer.Observe('session-data-ready', (sessionData) => {
+        console.log(sessionData)
+    })
     $("#logout").on('click', function(){
         $.ajax({
             method : 'DELETE',
