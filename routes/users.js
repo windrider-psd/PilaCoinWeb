@@ -116,7 +116,7 @@ router.post('/user', (req, res, next) => {
    */
   let params = req.body
 
-  if(!(params.username && params.password && params.admin == null))
+  if(!(params.username && params.password && params.admin != null))
   {
     res.status(400).end("Invalid parameters")
     return
@@ -135,12 +135,24 @@ router.post('/user', (req, res, next) => {
           if (err) {
             res.status(500).end("Error while encrypting password")
           } else {
+            console.log(req.session)
+            console.log(req.session.user.id)
+            let userObj = {
+              username: sanitizer.sanitize(params.username),
+              password: encryptedPassword,
+              admin: params.admin == 'true',
+              createdBy: req.session.user.id
+            }
+            console.log(userObj)
             models.User.create({
                 username: sanitizer.sanitize(params.username),
                 password: encryptedPassword,
-                admin: params.admin
+                admin: params.admin == 'true',
+                createdBy: req.session.user.id
               })
               .then((createdUser) => {
+    
+                
                 res.status(200).json(createdUser.dataValues)
               })
               .catch((err) => {

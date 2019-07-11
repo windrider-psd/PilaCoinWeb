@@ -48,10 +48,18 @@ const user = con.define('user', {
         type : Sequelize.BOOLEAN,
         allowNull : false,
         default : false
+    },
+    createdBy: {
+        type : Sequelize.INTEGER,
+        references:{
+            model : this,
+            key : 'id'
+        },
+        allowNull : true
     }
 });
 
-user.hasOne(user, {foreignKey : {allowNull : true, defaultValue : null, field : "createdBy"}, onDelete : "SET NULL"})
+//user.hasOne(user, {foreignKey : {allowNull : true, field : "createdBy"}, onDelete : "SET NULL"})
 
 const pilaCoin = con.define('pilacoin', {
     id : {

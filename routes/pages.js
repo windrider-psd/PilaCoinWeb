@@ -39,7 +39,7 @@ router.get('/mining_report', (req, res) => {
   }
   else
   {
-    render('login', res)
+    res.redirect('/')
   }
 });
 
@@ -51,7 +51,18 @@ router.get('/pila_coin_list', (req, res) => {
   }
   else
   {
-    render('login', res)
+    res.redirect('/')
+  }
+});
+
+router.get('/create_user', (req, res) => {
+  if(HasAdminSession(req))
+  {
+    render('createuser', res);
+  }
+  else
+  {
+    res.redirect('/')
   }
 });
 
