@@ -135,21 +135,13 @@ router.post('/user', (req, res, next) => {
           if (err) {
             res.status(500).end("Error while encrypting password")
           } else {
-            console.log(req.session)
-            console.log(req.session.user.id)
             let userObj = {
               username: sanitizer.sanitize(params.username),
               password: encryptedPassword,
               admin: params.admin == 'true',
               createdBy: req.session.user.id
             }
-            console.log(userObj)
-            models.User.create({
-                username: sanitizer.sanitize(params.username),
-                password: encryptedPassword,
-                admin: params.admin == 'true',
-                createdBy: req.session.user.id
-              })
+            models.User.create(userObj)
               .then((createdUser) => {
     
                 

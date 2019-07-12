@@ -1,5 +1,5 @@
 let seq = require('sequelize')
-let {Sequelize} = seq
+let {Sequelize, QueryInterface} = seq
 let config = require('../app.config')
 let ready = false;
 
@@ -52,14 +52,19 @@ const user = con.define('user', {
     createdBy: {
         type : Sequelize.INTEGER,
         references:{
-            model : this,
+            model: "users",
             key : 'id'
         },
-        allowNull : true
+        allowNull : true,
+        onDelete : 'CASCADE'
     }
 });
 
-//user.hasOne(user, {foreignKey : {allowNull : true, field : "createdBy"}, onDelete : "SET NULL"})
+
+
+//user.belongsTo(user, {foreignKey : {allowNull : true, field : "createdBy"}, onDelete : "SET NULL"})
+
+//user.belongsTo(user, {foreignKey : {allowNull : true, field : "createdBy"}, onDelete : "SET NULL"})
 
 const pilaCoin = con.define('pilacoin', {
     id : {
@@ -89,24 +94,19 @@ const pilaCoin = con.define('pilacoin', {
 
 const transaction = con.define('transaction', {
     pilaCoin : {
-        type : seq.INTEGER,
-        references : {
-            model : pilaCoin,
-            key : 'id'
-        },
-        onDelete : 'CASCADE'
+        type : seq.BIGINT,
     },
-    idNovoDono : {
+    targetId : {
         type : seq.STRING,
         allowNull : false
     },
-    dataTransacao: {
-        type: seq.DATE,
-        allowNull : false,
-    },
-    assinaturaDono : {
-        type : seq.TEXT,
-        allowNull : false
+    user: {
+        type : Sequelize.INTEGER,
+        references:{
+            model : user,
+            key : 'id'
+        },
+        allowNull : true
     }
 })
 

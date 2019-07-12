@@ -16,7 +16,7 @@ $(document).ready(function () {
                return a.id- b.id;
             });
 
-            for(pilaCoin of response)
+            for(let pilaCoin of response)
             {
                 htmlString += `
                 <tr>
@@ -25,6 +25,7 @@ $(document).ready(function () {
                     <td>${new Date(pilaCoin.dataCriacao)}</td>
                     <td>${pilaCoin.numeroMagico}</td>
                     <td>${pilaCoin.transacoes != null ? pilaCoin.transacoes.length : 0}</td>
+                    <td><a href = "pila_tranf?pilaCoinId=${pilaCoin.id}">Transfer</a></td>
                 </tr>
                 `
             }
@@ -32,7 +33,7 @@ $(document).ready(function () {
         },
         error : (err) =>
         {
-            console.error(err)
+            utils.GerarNotificacao(err.responseText, 'danger')
         }
     })
 })

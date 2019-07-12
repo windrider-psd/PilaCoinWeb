@@ -63,6 +63,23 @@ module.exports = function CriarApp(sessao)
 
   app.use('/users/', require('./routes/users'))
   app.use('/pilacoins/', require('./routes/pilaCoins'))
+
+  app.use((req, res, next) => {
+    if (typeof (req.session.user) != 'undefined' && req.session.user != null) {
+      next()
+    } else {
+      res.status(401).end("No session.");
+    }
+  })
+
+  app.use((req, res, next) => {
+    if (req.session.user.admin == true) {
+      next()
+    } else {
+      res.status(401).end("No permissions.");
+    }
+  })
+  
   app.use('/mining/', require('./routes/mining'))
 
   // catch 404 and forward to error handler
