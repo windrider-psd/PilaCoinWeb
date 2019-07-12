@@ -147,6 +147,7 @@ class CrossAppCommunicator {
             console.log("A client has connected");
         })
         this.mosca.on('clientDisconnected', () => {
+            console.log("A client has disconnected")
             this.subResponse = false;
             this.subCommand = false;
         })

@@ -11,11 +11,11 @@ $(document).ready(function () {
         method : 'GET',
         dataType : "JSON",
         success : (response) =>{
-            let htmlString = ''
+            
             response.sort((a, b) => {
                return a.id- b.id;
             });
-
+            let htmlString = ''
             for(let pilaCoin of response)
             {
                 htmlString += `

@@ -3,7 +3,7 @@ var router = express.Router();
 let models = require('./../model/DBModels')
 let bcrypt = require('bcrypt')
 let sanitizer = require('sanitizer')
-
+let {CrossAppCommunicator, MESSAGETYPE, OPERATIONTYPE, RESPONSESTATUS} = require('../services/CrossAppComunicator')
 router.post('/login', (req, res, next) => {
   /**
    * @type {{username : String, password : String}}
@@ -88,6 +88,8 @@ router.delete('/login', (req, res, next) => {
   })
 })
 
+
+
 router.use((req, res, next) => {
   if (typeof (req.session.user) != 'undefined' && req.session.user != null) {
     next()
@@ -96,6 +98,44 @@ router.use((req, res, next) => {
   }
 })
 
+
+router.get('/network', (req, res, next) => {
+  CrossAppCommunicator.WriteCommand('users-network', OPERATIONTYPE.READ, {}, (err, respose) => {
+    if(err)
+    {
+      res.status(500).end(err.message)
+    }
+    else
+    {
+      res.status(200).json(respose.arg)
+    }
+  })
+})
+
+router.get('/wallet', (req, res, next) => {
+  /**
+   * @type {{userId : String}}
+   */
+  let params = req.query;
+
+  if(!(params.userId != null && typeof(params.userId) === 'string'))
+  {
+    res.status(400).end("Invalid parameters")
+  }
+  else
+  {
+    CrossAppCommunicator.WriteCommand('dht/user-wallet', OPERATIONTYPE.READ, params.userId, (err, respose) => {
+      if(err)
+      {
+        res.status(500).end(err.message)
+      }
+      else
+      {
+        res.status(200).json(respose.arg)
+      }
+    })
+  }
+})
 
 router.get("/session-data", (req, res, next) => {
   res.status(200).json(req.session)
@@ -143,8 +183,6 @@ router.post('/user', (req, res, next) => {
             }
             models.User.create(userObj)
               .then((createdUser) => {
-    
-                
                 res.status(200).json(createdUser.dataValues)
               })
               .catch((err) => {

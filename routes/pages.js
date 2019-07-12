@@ -44,6 +44,28 @@ router.get('/mining_report', (req, res) => {
 });
 
 
+router.get('/usersnetwork', (req, res) => {
+  if(HasSession(req))
+  {
+    render('usersnetwork', res);
+  }
+  else
+  {
+    res.redirect('/')
+  }
+});
+
+router.get('/wallet', (req, res) => {
+  if(HasSession(req))
+  {
+    render('userwallet', res);
+  }
+  else
+  {
+    res.redirect('/')
+  }
+});
+
 router.get('/pila_coin_list', (req, res) => {
   if(HasSession(req))
   {
