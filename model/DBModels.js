@@ -56,7 +56,7 @@ const user = con.define('user', {
             key : 'id'
         },
         allowNull : true,
-        onDelete : 'CASCADE'
+        onDelete : 'SET NUll'
     }
 });
 

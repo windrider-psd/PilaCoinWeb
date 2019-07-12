@@ -24,6 +24,7 @@ $(document).ready(function () {
             GetUserWallet(user.id, (pilaCoins) => {
                 let htmlString = ''
                 for (let pilaCoin of pilaCoins) {
+                    utils.LimparObj(pilaCoin)
                     htmlString += `
                     <tr>
                         <td>${pilaCoin.id}</td>

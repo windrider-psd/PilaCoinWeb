@@ -11,7 +11,7 @@ $(document).ready(function () {
             data: params,
             dataType : "JSON",
             success : (response) => {
-                utils
+                utils.GerarNotificacao("User created", 'success');
                 $(this)[0].reset();
             },
             error : function (message) {
