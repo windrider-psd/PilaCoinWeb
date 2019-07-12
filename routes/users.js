@@ -101,6 +101,7 @@ router.use((req, res, next) => {
 
 router.get('/network', (req, res, next) => {
   CrossAppCommunicator.WriteCommand('users-network', OPERATIONTYPE.READ, {}, (err, respose) => {
+
     if(err)
     {
       res.status(500).end(err.message)

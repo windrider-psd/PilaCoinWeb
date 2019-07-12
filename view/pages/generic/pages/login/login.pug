@@ -1,11 +1,20 @@
-form(onsubmit="return false")#register-form
-    .form-group
-        label(for="username").imperium-label username:
-        input.form-control.my-input(type='text', name='username', placeholder='Username', required)
-    .form-group
-        label(for="password").imperium-label password:
-        input.form-control.my-input(type='password', name='password', placeholder='*******', required)
-    div.row(style="margin-top:10px;")
-        .col-md-offset-3.col-md-6.col-sm-12
-            button.btn.btn-block.btn-primary.btn-block(type='submit') Login
+doctype html
+html(lang="pt-br")
+    head
+        title Login
+        meta(charset = "UTF-8")
+        meta(name = "viewport", content = "width=device-width, initial-scale=1")
+        meta(http-equiv = "X-UA-Compatible", content = "IE=edge")
+    body
+        
+        form(onsubmit="return false")#register-form
+            .form-group
+                label(for="username").imperium-label username:
+                input.form-control.my-input(type='text', name='username', placeholder='Username', required)
+            .form-group
+                label(for="password").imperium-label password:
+                input.form-control.my-input(type='password', name='password', placeholder='*******', required)
+            div.row(style="margin-top:10px;")
+                .col-md-offset-3.col-md-6.col-sm-12
+                    button.btn.btn-block.btn-primary.btn-block(type='submit') Login
     

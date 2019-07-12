@@ -88,4 +88,15 @@ router.get('/create_user', (req, res) => {
   }
 });
 
+router.get('/pila_tranf', (req, res) => {
+  if(HasAdminSession(req))
+  {
+    render('pilatranfer', res);
+  }
+  else
+  {
+    res.redirect('/')
+  }
+});
+
 module.exports = router;

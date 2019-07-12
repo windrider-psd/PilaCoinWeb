@@ -7,7 +7,7 @@ $(document).ready(function () {
         console.log(sessionData)
     })
     let queryParams = utils.ParseGET();
-    queryParams = utils.LimparObj(queryParams);
+    utils.LimparObj(queryParams);
     
     
     GetStorage((storage) => {
@@ -27,13 +27,14 @@ $(document).ready(function () {
             utils.GerarNotificacao("Pila coin not found!", 'danger');
         }
         else{
-
-            $("#register-form").on('submit', function() {
+            $("#pila-coin span").text(pilaCoin.id)
+            $("#transfer-form").on('submit', function() {
 
                 let params = utils.FormToAssocArray($(this))
                 params.pilaCoinId = pilaCoin.id
+                console.log(params)
                 $.ajax({
-                    url : 'pilacoins/tranfer',
+                    url : 'pilacoins/transfer',
                     method : 'PUT',
                     data : params,
                     dataType : 'JSON',

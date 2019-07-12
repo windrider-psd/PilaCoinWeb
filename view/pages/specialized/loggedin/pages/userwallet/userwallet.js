@@ -5,20 +5,21 @@ let observer = require('./../../../../generic/modules/observer')
 $(document).ready(function () {
 
     let params = utils.ParseGET();
-    params = utils.LimparObj(params)
-
+    utils.LimparObj(params)
 
     GetUsersNetwork((users) => {
         let user = null
 
         users.forEach(element => {
-            if (element.id == params.id) {
+    
+            if (element.id == params.userId) {
                 user = element
                 return false
             }
         });
 
-        if (true) {
+
+        if (user != null) {
             //$("#user-title span").text(user.id)
             GetUserWallet(user.id, (pilaCoins) => {
                 let htmlString = ''
@@ -44,7 +45,6 @@ $(document).ready(function () {
             method: 'GET',
             dataType: "JSON",
             success: (response) => {
-
                 callback(response);
             },
             error: (err) => {

@@ -18,6 +18,7 @@ $(document).ready(function () {
             let htmlString = ''
             for(let pilaCoin of response)
             {
+                utils.LimparObj(pilaCoin)
                 htmlString += `
                 <tr>
                     <td>${pilaCoin.id}</td>

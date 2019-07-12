@@ -87,8 +87,8 @@ router.put('/transfer', (req, res) => {
      * @type {{pilaCoinId : Number, targetId : String}}
      */
     let params = req.body
-
-    if(!(params.pilaCoinId == null && params.targetId == null))
+    
+    if(!(params.pilaCoinId != null && params.targetId != null))
     {
         res.status(400).end("Invalid parameters")
     }

@@ -1,10 +1,19 @@
-h1 Transfer Pila Coin
-P#pila-coin Pila Coin:
-    span
-form(onsubmit="return false")#transfer-form
-    .form-group
-        label(for="username").imperium-label Target Id:
-        input.form-control.my-input(type='text', name='targetId', placeholder='Id', required)
-    div.row(style="margin-top:10px;")
-        .col-md-offset-3.col-md-6.col-sm-12
-            button.btn.btn-block.btn-primary.btn-block(type='submit') Transfer Pila COin
+
+doctype html
+html(lang="pt-br")
+    head
+        title Transfer Pila Coin
+        meta(charset = "UTF-8")
+        meta(name = "viewport", content = "width=device-width, initial-scale=1")
+        meta(http-equiv = "X-UA-Compatible", content = "IE=edge")
+    body  
+        h1 Transfer Pila Coin
+        P#pila-coin Pila Coin:
+            span
+        form(onsubmit="return false")#transfer-form
+            .form-group
+                label(for="username").imperium-label Target Id:
+                input.form-control.my-input(type='text', name='targetId', placeholder='Id', required)
+            div.row(style="margin-top:10px;")
+                .col-md-offset-3.col-md-6.col-sm-12
+                    button.btn.btn-block.btn-primary.btn-block(type='submit') Transfer Pila COin
